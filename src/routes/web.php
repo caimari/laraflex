@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // use App\Http\Controllers\Auth\LoginController;
+use Caimari\LaraFlex\Controllers\CookieController;
 use Caimari\LaraFlex\Controllers\HomeController;
 use Caimari\LaraFlex\Controllers\AdminController;
 use Caimari\LaraFlex\Controllers\UserController;
+use Caimari\LaraFlex\Controllers\MemberController;
+use Caimari\LaraFlex\Controllers\MemberTypeController;
 use Caimari\LaraFlex\Controllers\ThemeController;
 use Caimari\LaraFlex\Controllers\ThemeCreateController;
 use Caimari\LaraFlex\Controllers\ThemeOptionsController;
@@ -21,14 +24,11 @@ use Caimari\LaraFlex\Controllers\SiteSearchController;
 use Caimari\LaraFlex\Controllers\SiteGalleriesController;
 use Caimari\LaraFlex\Controllers\FManageController;
 use Caimari\LaraFlex\Controllers\TableController;
+use Caimari\LaraFlex\Controllers\PackagesController;
+use Caimari\LaraFlex\Controllers\CodeSnippetsController;
 
 use Caimari\LaraFlex\Controllers\TestController;
 
-
-////////////////////////// SYSTEM ////////////////////////////////////////////////
-
-// Home
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 ////////////////////////// ADMIN ////////////////////////////////////////////////
 
@@ -54,6 +54,22 @@ Route::middleware(['web', 'auth'])->prefix('panel')->group(function () {
     Route::get('/users/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/update', [UserController::class, 'update'])->name('users.update');
 
+    // Members
+    Route::get('/members', [MemberController::class, 'index'])->name('panel.members.index');
+    Route::get('/members/create', [MemberController::class, 'create'])->name('panel.members.create');
+    Route::post('/members', [MemberController::class, 'store'])->name('panel.members.store');
+    Route::get('/members/{member}/edit', [MemberController::class, 'edit'])->name('panel.members.edit');
+    Route::put('/members/{member}', [MemberController::class, 'update'])->name('panel.members.update');
+    Route::post('/members/{member}/destroy', [MemberController::class, 'destroy'])->name('panel.members.destroy');
+
+    // Members Type
+    Route::get('/type', [MemberTypeController::class, 'index'])->name('panel.members.type.index');
+    Route::get('/type/create', [MemberTypeController::class, 'create'])->name('panel.members.type.create');
+    Route::post('/type', [MemberTypeController::class, 'store'])->name('panel.members.type.store');
+    Route::get('/type/{type}/edit', [MemberTypeController::class, 'edit'])->name('panel.members.type.edit');
+    Route::put('/type/{type}', [MemberTypeController::class, 'update'])->name('panel.members.type.update');    
+    Route::delete('/type/{type}', [MemberTypeController::class, 'destroy'])->name('panel.members.type.destroy');
+
     // Tables SQL
     Route::get('/tables', [TableController::class, 'index'])->name('tables.index');  
     Route::get('/tables/create', [TableController::class, 'create'])->name('tables.create');
@@ -78,6 +94,16 @@ Route::middleware(['web', 'auth'])->prefix('panel')->group(function () {
     Route::put('/pages/{id}', [PagesController::class, 'update'])->name('pages.update');
     Route::post('pages/{page}/destroy', [PagesController::class, 'destroy'])->name('pages.destroy');
     Route::post('setHomePage/{id}', [GeneralSettingsController::class, 'setHomePage'])->name('setHomePage');
+
+    // Code Snippets
+    Route::get('code-snippets', [CodeSnippetsController::class, 'index'])->name('panel.code-snippets.index');
+    Route::get('code-snippets/create', [CodeSnippetsController::class, 'create'])->name('panel.code-snippets.create');
+    Route::post('code-snippets', [CodeSnippetsController::class, 'store'])->name('panel.code-snippets.store');
+    Route::get('code-snippets/{code_snippet}/edit', [CodeSnippetsController::class, 'edit'])->name('panel.code-snippets.edit');
+    Route::put('code-snippets/{code_snippet}', [CodeSnippetsController::class, 'update'])->name('panel.code-snippets.update');
+    Route::delete('code-snippets/{code_snippet}', [CodeSnippetsController::class, 'destroy'])->name('panel.code-snippets.destroy');
+    Route::put('code-snippets/{codeSnippet}/revert/{version}', [CodeSnippetsController::class, 'revert'])->name('panel.code-snippets.revert');
+    Route::post('setHomeSnippet/{id}', [GeneralSettingsController::class, 'setHomeSnippet'])->name('setHomeSnippet');
 
     // Posts
     Route::get('posts', [PostController::class, 'index'])->name('posts.index');
@@ -131,7 +157,6 @@ Route::middleware(['web', 'auth'])->prefix('panel')->group(function () {
     Route::post('/theme/process', [ThemeCreateController::class, 'process'])->name('theme.process');
     Route::get('/theme/index', [ThemeCreateController::class, 'index'])->name('theme.index');
 
-
     // Menus
     Route::get('manage-menus/{id?}', [SiteMenuController::class, 'index'])->name('panel.menus');
     Route::post('create-menu', [SiteMenuController::class, 'store'])->name('create.menu');
@@ -146,7 +171,14 @@ Route::middleware(['web', 'auth'])->prefix('panel')->group(function () {
     Route::post('update-menuitem/{id}', [SiteMenuController::class, 'updateMenuItem'])->name('update.menuitem');
     Route::get('delete-menuitem/{id}', [SiteMenuController::class, 'deleteMenuItem'])->name('delete.menuitem');
 
+    // Packages
+    Route::get('packages', [PackagesController::class, 'index'])->name('packages.index');
+    Route::post('packages/composer-install', [PackagesController::class, 'composerInstall'])->name('package.composer.install');
+
+    // Panel
     Route::get('/', [AdminController::class, 'index'])->name('panel.index');
+    
+    // Panel Search
     Route::post('ajax-search-results', [AdminController::class, 'ajaxSearchResults'])->name('panel.ajaxSearchResults');
     Route::get('search-results', [AdminController::class, 'searchResults'])->name('panel.searchResults');
   
@@ -157,23 +189,42 @@ Route::middleware(['web', 'auth'])->prefix('panel')->group(function () {
     })->name('panel.logout');
 });
 
-////////////////////////// GLOBAL FRONT ////////////////////////////////////////////////
+////////////////////////// Frontend ////////////////////////////////////////////////
 
-// Search
-Route::get('search', [SiteSearchController::class, 'search'])->name('search');
+Route::middleware(['web', 'cookie-consent'])->group(function () {
+    
+    // home
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    
+    // Cookies web
+    Route::get('use-of-cookies', [HomeController::class, 'useCookies'])->name('use-of-cookies');
+    Route::post('/cookies/accept', [CookieController::class, 'acceptCookies'])->name('cookies.accept');
 
-// Posts
-Route::get('p/{slug}', [SiteContentController::class, 'showPost'])->name('post.show');
-Route::get('p', [SiteContentController::class, 'listPosts'])->name('post.list');
+    // Search
+    Route::get('search', [SiteSearchController::class, 'search'])->name('search');
 
-// Post Categories
-Route::get('c/{slug}', [SiteContentController::class, 'showCategory'])->name('category.show');
-Route::get('c', [SiteContentController::class, 'listCategories'])->name('category.list');
+    // Posts
+    Route::get('p/{slug}', [SiteContentController::class, 'showPost'])->name('post.show');
+    Route::get('p', [SiteContentController::class, 'listPosts'])->name('post.list');
 
-// Post Tags
-Route::get('t/{slug}', [SiteContentController::class, 'showTag'])->name('tag.show');
-Route::get('t', [SiteContentController::class, 'listTags'])->name('tag.list');
+    // Post Categories
+    Route::get('c/{slug}', [SiteContentController::class, 'showCategory'])->name('category.show');
+    Route::get('c', [SiteContentController::class, 'listCategories'])->name('category.list');
 
-// Pages /// IMPORTANTE!!! el Route::get('{slug}' tiene que ser el ultimo de la lista para no sobreescribir rutas
-Route::get('pg', [SiteContentController::class, 'ListPages'])->name('page.list');
-Route::get('pg/{slug}', [SiteContentController::class, 'showPage'])->name('page.show');
+    // Post Tags
+    Route::get('t/{slug}', [SiteContentController::class, 'showTag'])->name('tag.show');
+    Route::get('t', [SiteContentController::class, 'listTags'])->name('tag.list');
+
+    // Pages /// IMPORTANTE!!! el Route::get('{slug}' deberia de ser el ultimo para no sobreescribir rutas.
+                            // no obstante ha sido cambiado a pg para evitar despistes.
+    Route::get('pg', [SiteContentController::class, 'ListPages'])->name('page.list');
+    Route::get('pg/{slug}', [SiteContentController::class, 'showPage'])->name('page.show');
+
+});
+
+
+    Route::post('/accept-cookies', function (Request $request) {
+    return response('OK')->withCookie(cookie('cookie_consent', '1', 60 * 24 * 365)); // Cookie que dura 1 año
+});
+
+

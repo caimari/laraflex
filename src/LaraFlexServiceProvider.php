@@ -4,16 +4,23 @@ namespace Caimari\LaraFlex;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use Illuminate\View\FileViewFinder;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Schema;
 use Doctrine\DBAL\Types\Type;
 use Caimari\LaraFlex\Database\Platforms\CustomMySqlPlatform;
-
+use Caimari\LaraFlex\Middleware\CookieConsent;
+use Illuminate\Support\ViewErrorBag;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
+use Caimari\LaraFlex\Exceptions\AdminsHandler;
+use Caimari\LaraFlex\Middleware\AdminsRedirectIfAuthenticated;
+use Caimari\LaraFlex\Middleware\AdminsAuthenticate;
+
+
+use Caimari\LaraFlex\Models\Admin;
 
 
 class LaraFlexServiceProvider extends ServiceProvider
@@ -23,9 +30,20 @@ class LaraFlexServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(\Illuminate\Routing\Router $router)
     {
 
+        View::composer([
+            'layouts.app', 
+            'laraflex::layouts.app', 
+            'laraflex::admin.login', 
+            'laraflex::admin.register', 
+            'laraflex::admin.profile', 
+            'laraflex::partials.*', 
+            'plexus::app'
+        ], function ($view) {
+            $view->with('errors', session()->get('errors') ? session()->get('errors') : new ViewErrorBag);
+        });
 
         // Option A - publish migrations with: php artisan vendor:publish --tag=laraflex-migrations
         //$this->publishes([
@@ -50,8 +68,12 @@ class LaraFlexServiceProvider extends ServiceProvider
         // Para trabajar con tablas con el paquete doctrine/dbal
         Schema::getConnection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
-        // Carga las vistas del Admin Panel
         
+        // Middleware 
+        $this->app['router']->aliasMiddleware('cookie-consent', CookieConsent::class);
+      //  $router->aliasMiddleware('guest', AdminsRedirectIfAuthenticated::class);
+      //  $router->aliasMiddleware('auth', AdminsAuthenticate::class);
+
        // $this->loadViewsFrom(__DIR__ . '/resources/views', 'wmenu');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'laraflex');
         
@@ -96,7 +118,31 @@ class LaraFlexServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        
+        $this->app['config']->set('auth.guards.admin', [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ]);
+    
+        $this->app['config']->set('auth.providers.admins', [
+            'driver' => 'eloquent',
+            'model' => Admin::class,
+        ]);
+        
+        $this->app->bind('admins', function ($app) {
+            return new Admins;
+        });
 
+        // Admin Exceptin Handler
+        $this->app->singleton(ExceptionHandler::class, AdminsHandler::class);
+
+                // Configuración de reinicio de contraseña para el guard "admin"
+                $this->app['config']->set('auth.passwords.admins', [
+                    'provider' => 'admins',
+                    'table' => 'password_resets',
+                    'expire' => 60,
+                    'throttle' => 60,
+                ]);
     }
 
-}
+    }

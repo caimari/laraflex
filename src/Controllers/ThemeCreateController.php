@@ -26,7 +26,7 @@ public function index()
     $themes = Theme::all();
     $processedZipPath = '/processed.zip';
 
-    return view('admin.themes.create', compact('themes', 'processedZipPath'));
+    return view('laraflex::admin.themes.create', compact('themes', 'processedZipPath'));
 }
 
 

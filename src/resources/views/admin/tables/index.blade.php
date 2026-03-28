@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('laraflex::layouts.admin')
 @section('content')
 
 <style>

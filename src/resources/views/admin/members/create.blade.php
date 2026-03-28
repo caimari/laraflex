@@ -17,7 +17,7 @@
 </script>
 
 <div class="container-fluid px-4">
-    <h1>Edit Profile</h1>
+    <h1>Create Member</h1>
 
     @if ($errors->any())
     <div class="alert alert-danger">
@@ -35,19 +35,28 @@
     </div>
     @endif
 
-    <form action="{{ route('users.update') }}" method="POST">
+    <form action="{{ route('panel.members.store') }}" method="POST">
         @csrf
-        @method('PUT')
 
         <div class="mb-3">
             <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}">
+            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
         </div>
 
         <div class="mb-3">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}">
+            <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
         </div>
+
+        <div class="form-group">
+            <label for="member_types">Member Types</label>
+            <select class="form-control" id="member_types" name="member_types[]" multiple>
+                @foreach ($memberTypes as $memberType)
+                    <option value="{{ $memberType->id }}">{{ $memberType->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
 
         <div class="mb-3">
             <label for="password">Password</label>
@@ -64,8 +73,7 @@
             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" autocomplete="off">
         </div>
 
-        <button type="submit" class="btn btn-primary">Update Profile</button>
+        <button type="submit" class="btn btn-primary">Create Member</button>
     </form>
 </div>
 @endsection
-

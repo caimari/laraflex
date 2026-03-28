@@ -15,14 +15,14 @@ class PostCategoryController extends Controller
        
         $categories = SitePostCategory::all();
 
-        return view('admin.post-categories.index', compact('categories'));
+        return view('laraflex::admin.post-categories.index', compact('categories'));
     }
 
     public function create()
     {
         
 
-        return view('admin.post-categories.create');
+        return view('laraflex::admin.post-categories.create');
     }
 
     public function store(Request $request)

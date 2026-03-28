@@ -19,17 +19,43 @@
     </div>
     @endif
 
-    <div class="row">
-        <div class="col-lg-9">
-            <!-- Contenido de la columna izquierda (ancho 9) -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">General Settings</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.general-settings.update') }}" method="POST">
+
+    <form action="{{ route('admin.general-settings.update') }}" method="POST">
                         @csrf
                         @method('PUT')
+
+    <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          <a class="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1" role="tab" aria-controls="tab1"
+            aria-selected="true">General</a>
+          <a class="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2" role="tab" aria-controls="tab2"
+            aria-selected="false">Social links</a>
+          <a class="nav-link" id="tab3-tab" data-bs-toggle="pill" href="#tab3" role="tab" aria-controls="tab3"
+            aria-selected="false">Cookie consent</a>
+        </div>
+      </div>
+
+     
+                    
+
+
+      <div class="col-md-9">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+            
+
+          <div class="card"> <!-- Start Card -->
+             
+         
+          <div class="card-header">
+                    <h5 class="card-title">General Settings</h5>
+                </div>
+
+
+          <div class="card-body">
+
 
                         <div class="mb-3">
                             <label for="title" class="form-label">Site title</label>
@@ -50,6 +76,28 @@
                             <label for="keywords" class="form-label">Keywords</label>
                             <input type="text" class="form-control" id="keywords" name="keywords" value="{{ $settings->keywords }}">
                         </div>
+
+                        <button type="submit" class="btn btn-primary">Save</button>
+                 
+                </div>
+    </div> <!-- End Card -->
+
+
+          </div>
+          <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+           
+
+          
+          <div class="card"> <!-- Start Card -->
+             
+         
+          <div class="card-header">
+                    <h5 class="card-title">Social Links</h5>
+                </div>
+
+
+          <div class="card-body">
+
 
                         <div class="mb-3">
                             <label for="twitter" class="form-label">Twitter</label>
@@ -77,50 +125,60 @@
                         </div>
 
                         <div class="mb-3">
-    <label for="github" class="form-label">GitHub</label>
-    <input type="text" class="form-control" id="github" name="github" value="{{ $settings->github }}">
-</div>
-
-<!--
-<div class="mb-3">
-    <label for="number_posts_show" class="form-label">Number of Posts to Show</label>
-    <input type="number" class="form-control" id="number_posts_show" name="number_posts_show" value="{{ $settings->number_posts_show }}">
-</div>
+                            <label for="github" class="form-label">GitHub</label>
+                            <input type="text" class="form-control" id="github" name="github" value="{{ $settings->github }}">
+                        </div>
 
 
-<div class="mb-3">
-    <label for="number_comments_show" class="form-label">Number of Comments to Show</label>
-    <input type="number" class="form-control" id="number_comments_show" name="number_comments_show" value="{{ $settings->number_comments_show }}">
-</div>
-
-<div class="mb-3">
-    <label for="registration_active" class="form-label">Registration Active</label>
-    <select class="form-control" id="registration_active" name="registration_active">
-        <option value="0" {{ $settings->registration_active == '0' ? 'selected' : '' }}>No</option>
-        <option value="1" {{ $settings->registration_active == '1' ? 'selected' : '' }}>Yes</option>
-    </select>
-</div>
-
-<div class="mb-3">
-    <label for="account_verification" class="form-label">Account Verification</label>
-    <select class="form-control" id="account_verification" name="account_verification">
-        <option value="0" {{ $settings->account_verification == '0' ? 'selected' : '' }}>No</option>
-        <option value="1" {{ $settings->account_verification == '1' ? 'selected' : '' }}>Yes</option>
-    </select>
-</div> -->
+                        <button type="submit" class="btn btn-primary">Save</button>
+               
+                </div>
+    </div> <!-- End Card -->
 
 
-<button type="submit" class="btn btn-primary">Save</button>
-</form>
-</div>
-</div>
-</div>
 
-<!-- Contenido de la columna derecha (ancho 3) -->
-<div class="col-lg-3">
-    <!-- Agrega aquí el contenido de la columna derecha -->
-</div>
-</div>
+          </div> <!-- End Tab 2 -->
+
+          <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+           
+          <div class="card"> <!-- Start Card -->
+             
+         
+             <div class="card-header">
+                       <h5 class="card-title">Cookie Policy Page</h5>
+                   </div>
+   
+   
+             <div class="card-body">
+               
+   
+   
+                           <div class="mb-3">
+                               <label for="use_cookies_page" class="form-label">Cookie page</label>
+                               <!-- Ckeditor -->
+                               <textarea class="form-control" id="ckeditorcontent" name="use_cookies_page" rows="4">{{ $settings->use_cookies_page }}</textarea>
+                           </div>
+
+    
+                    
+                           <button type="submit" class="btn btn-primary">Save</button>
+                       </form>
+                   </div>
+       </div> <!-- End Card -->
+
+          </div> <!-- End tab 3 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="margin"></div>
+
+@include('laraflex::admin.partials.pages-ckeditor-conf')
 
 @endauth
+
 @endsection
+
+
+

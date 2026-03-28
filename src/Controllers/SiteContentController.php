@@ -45,7 +45,7 @@ class SiteContentController extends Controller
         // Obtener el nombre del tema activo
         $theme = $this->getActiveTheme();
 
-        $page = SitePage::where('slug', $slug)->firstOrFail();
+        $page = SitePage::where('slug', $slug)->where('status', 1)->firstOrFail();
     
         // Obtener el contenido de la página
         $content = $page->content;
@@ -87,8 +87,8 @@ class SiteContentController extends Controller
         // Obtener el nombre del tema activo
         $theme = $this->getActiveTheme();
 
-        $pages = SitePage::orderBy('created_at', 'desc')->paginate(10);
-        
+        $pages = SitePage::where('status', 1)->orderBy('created_at', 'desc')->paginate(10);
+
         return view("{$theme}::frontend.page-list", compact('pages'));
     }
     

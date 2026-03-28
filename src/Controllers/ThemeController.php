@@ -103,50 +103,57 @@ class ThemeController extends Controller
     
         rmdir($folderPath);
     }
-    public function backup(Request $request)
+  public function backup(Request $request)
 {
     $themeIds = explode(',', $request->input('selected_themes'));
 
-    // Create a new zip archive
+    // Crear un nuevo archivo ZIP
     $zip = new \ZipArchive;
 
-    // Generate timestamp
+    // Timestamp para el nombre del archivo
     $timestamp = date('YmdHis');
 
-    $filename = storage_path('app/themes_backup.zip');
-    if ($zip->open($filename, \ZipArchive::CREATE)!==TRUE) {
-        exit("cannot open <$filename>\n");
+    $filename = storage_path("app/themes_backup_$timestamp.zip");
+    if ($zip->open($filename, \ZipArchive::CREATE) !== TRUE) {
+        exit("No se puede abrir <$filename>\n");
     }
 
     foreach ($themeIds as $themeId) {
-        // Get the theme's name from the database
+        // Obtener el nombre del tema desde la base de datos
         $theme = DB::table('site_themes')->where('id', $themeId)->first();
+        if (!$theme) continue;
+
         $themeName = $theme->name;
 
-        // Add the theme's directory to the zip
-        $themeDirectory = base_path("vendor/caimari/themes/$themeName");
+        // Nueva ruta corregida a la carpeta del tema
+        $themeDirectory = base_path("vendor/caimari/laraflex-theme-$themeName/src");
+
+        // Validar si la carpeta existe
+        if (!is_dir($themeDirectory)) {
+            Log::warning("No se encontró la carpeta del tema: $themeDirectory");
+            continue;
+        }
+
+        // Recorrer y añadir archivos al zip
         $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($themeDirectory),
+            new \RecursiveDirectoryIterator($themeDirectory, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        foreach ($files as $name => $file)
-        {
-            if (!$file->isDir())
-            {
+        foreach ($files as $file) {
+            if (!$file->isDir()) {
                 $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($themeDirectory) + 1);
-
-                $zip->addFile($filePath, "$themeName/$relativePath");
+                $relativePath = $themeName . '/src/' . substr($filePath, strlen($themeDirectory) + 1);
+                $zip->addFile($filePath, $relativePath);
             }
         }
     }
 
     $zip->close();
 
-    // Redirect
+    // Descargar el zip
     return response()->download($filename, "themes_backup_$timestamp.zip");
-    }
+}
 
     public function destroy(Request $request, $id)
     {

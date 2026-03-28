@@ -39,5 +39,6 @@ class GeneralSettings extends Model
         'reddit',
         'telegram',
         'whatsapp',
+        'use_cookies_page',
     ];
 }

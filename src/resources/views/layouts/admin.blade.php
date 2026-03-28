@@ -2,7 +2,6 @@
 <html lang="{{ app()->getLocale() }}">
     <head>
 
-       
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -11,8 +10,6 @@
         
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
-       <!-- <title>Dashboard - Laraflex</title>-->
 
         <title>Laraflex</title>
 
@@ -36,21 +33,24 @@
         <!-- Prism -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
 
-  
+        <!-- Spectrum Color Picker -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectrum-colorpicker@1.8.1/spectrum.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/spectrum-colorpicker@1.8.1/spectrum.min.js"></script>
+
         <!-- File Manager -->
         <!--<link rel="stylesheet" href="{{ asset('vendor/file-manager/css/file-manager.css') }}"> -->
         <!-- <script src="{{ asset('vendor/file-manager/js/file-manager.js') }}"></script> -->
 
-    <!--    <script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
-        <script src="/vendor/caimari/laraflex/assets/vendor/ckeditor/plugins/codesnippet/plugin.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.16.1/plugins/codesnippet/lib/highlight/highlight.pack.js"></script>
-    -->
-
+        <!-- Ckeditor & Code Snippet & Highlight -->
         <script src="/vendor/caimari/laraflex/assets/vendor/ckeditor/ckeditor.js"></script>
         <script src="/vendor/caimari/laraflex/assets/vendor/ckeditor/plugins/codesnippet/plugin.js"></script>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
         <link href="/vendor/caimari/laraflex/assets/vendor/ckeditor/plugins/codesnippet/lib/highlight/styles/default.css" rel="stylesheet">
+
+        <!--<script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
+        <script src="/vendor/caimari/laraflex/assets/vendor/ckeditor/plugins/codesnippet/plugin.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.16.1/plugins/codesnippet/lib/highlight/highlight.pack.js"></script>-->
 
 
         <!-- Sweet Alert -->
@@ -68,29 +68,23 @@
 
 
         <style>
+    .sortable i {
+        display: none;
+    }
 
-
-.sortable i {
-    display: none;
-}
-
-.sortable[data-sort="title"] .fa-chevron-up {
-    display: inline-block;
-}
-
-
+    .sortable[data-sort="title"] .fa-chevron-up {
+        display: inline-block;
+    }
 
     .margin {
         margin: 1em 0;
     }
-
    
     .no-link-decoration {
         text-decoration: none;
         cursor: default;
         color: inherit;
     }
-
 
         /* Estilos para la barra de desplazamiento en WebKit (Chrome, Safari) */
     #layoutSidenav_nav::-webkit-scrollbar {
@@ -129,13 +123,11 @@
             <!-- Navbar search-->
             @auth
             <form id="searchForm" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-    <div class="input-group">
-        <input id="searchTerm" class="form-control" type="text" name="searchTerm" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-        <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
-    </div>
-</form>
-
-
+            <div class="input-group">
+                <input id="searchTerm" class="form-control" type="text" name="searchTerm" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
             @endauth
 
             <!-- Navbar menu dropdown -->
@@ -152,8 +144,6 @@
             </ul>
             @endauth
         </nav>
-
-
 
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
@@ -208,27 +198,25 @@
                     <a class="nav-link" href="{{ route('panel.menus') }}">
                      <div class="sb-nav-link-icon"><i class="fas fa-bars"></i></div>Menus</a>
 
-<!-- Dynamic menus generated -->
-@php
-    $sections = DB::table('admin_generated')->get();
-@endphp
+                    <!-- Dynamic menus generated -->
+                    @php
+                        $sections = DB::table('admin_generated')->get();
+                    @endphp
 
-@if ($sections->count() > 0)
-    <div class="sb-sidenav-menu-heading">Generated</div>
-    @foreach ($sections as $section)
-        @php
-            $formattedName = str_replace(['-', '_'], ' ', $section->name);
-            $formattedName = ucwords($formattedName);
-            $formattedRoute = $section->route;
-        @endphp
-        @if (Route::has($formattedRoute))
-            <a class="nav-link" href="{{ route($formattedRoute) }}">
-                <div class="sb-nav-link-icon"><i class="far fa-folder-open"></i></div>{{ $formattedName }}</a>
-        @endif
-    @endforeach
-@endif
-
-
+                    @if ($sections->count() > 0)
+                        <div class="sb-sidenav-menu-heading">Generated</div>
+                        @foreach ($sections as $section)
+                            @php
+                                $formattedName = str_replace(['-', '_'], ' ', $section->name);
+                                $formattedName = ucwords($formattedName);
+                                $formattedRoute = $section->route;
+                            @endphp
+                            @if (Route::has($formattedRoute))
+                                <a class="nav-link" href="{{ route($formattedRoute) }}">
+                                    <div class="sb-nav-link-icon"><i class="far fa-folder-open"></i></div>{{ $formattedName }}</a>
+                            @endif
+                        @endforeach
+                    @endif
 
                         <!-- Interface section -->
                         <div class="sb-sidenav-menu-heading">Interface</div>
@@ -243,16 +231,43 @@
                                 Galleries
                             </a>
                          
+                            <!-- Members Module -->
+                            @if(collect(app()->getProviders(\Caimari\Members\MembersServiceProvider::class))->isNotEmpty())
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseThemes" aria-expanded="false" aria-controls="collapseThemes">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            Members
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+
+                            <div class="collapse" id="collapseThemes" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{{ route('panel.members.index') }}">Members</a>
+                                    <a class="nav-link" href="{{ route('panel.members.type.index') }}">Type</a>
+                                </nav>
+                            </div>
+
+                            @endif
+
                             <a class="nav-link" href="{{ route('tables.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-puzzle-piece"></i></div>
                                 Tables & Crud
                             </a>
 
+                            <a class="nav-link" href="{{ route('panel.code-snippets.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-code"></i></div>
+                                Code Snippets
+                            </a>
+                           
+
+
 
                             <a class="nav-link" href="{{ route('users.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                                 Users
                             </a>
+
+                           
+
 
                             <!-- Appearance -->
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseThemes" aria-expanded="false" aria-controls="collapseThemes">
@@ -279,17 +294,19 @@
                             <div class="collapse" id="collapseSettingsLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{{ route('admin.general-settings.index') }}">General Settings</a>
-                                    <a class="nav-link" href="#">Languages</a>
+                                  <!--  <a class="nav-link" href="#">Languages</a> -->
 
                                             
                                 </nav>
                             </div>
 
                                 <!-- Packages -->
-                                 <a class="nav-link" href="#">
+                                <!-- <a class="nav-link" href="{{ route('packages.index') }}">
                                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                             Packages
-                                            </a>
+                                            </a>-->
+
+
                                         </div>
                                     </div> 
 
@@ -394,19 +411,17 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="/vendor/caimari/laraflex/src/resources/assets/js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-   <!--     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script> -->
+   <!-- <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script> -->
         <script src="/vendor/caimari/laraflex/src/resources/assets/js/datatables-simple-demo.js"></script>
 
-<!--
-        <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        hljs.initHighlighting();
-    });
-       </script>
--->
+        <!--<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                hljs.initHighlighting();
+            });
+            </script>-->
 
 
-<script>
+    <script>
     document.getElementById('searchForm').addEventListener('submit', function(event) {
         event.preventDefault();
         var searchTerm = document.getElementById('searchTerm').value;
@@ -433,7 +448,7 @@
         };
         xhr.send(form);
     }
-</script>
+    </script>
 
     
     </body>

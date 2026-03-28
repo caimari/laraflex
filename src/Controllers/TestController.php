@@ -10,7 +10,7 @@ class TestController extends Controller
 {
     public function test()
     {
-        return view('admin.test.test');
+        return view('laraflex::admin.test.test');
     }
 
 }

@@ -30,7 +30,7 @@ class TableController extends Controller
         // Obtén la lista de tablas que tienen un CRUD generado
         $tablesWithCrud = DB::table('admin_generated')->pluck('name')->toArray();
     
-        return view('admin.tables.index', compact('tables', 'tablesWithCrud'));
+        return view('laraflex::admin.tables.index', compact('tables', 'tablesWithCrud'));
     }
     
 
@@ -60,7 +60,7 @@ class TableController extends Controller
             if (!File::exists($controllerPath)) {
                 // Crea el contenido del controlador desde cero
                 $controllerContent = "<?php\n\n";
-                $controllerContent .= "namespace Laraflex\\AdminPanel\\Controllers\\Generated;\n\n";
+                $controllerContent .= "namespace Caimari\\LaraFlex\\Controllers\\Generated;\n\n";
                 $controllerContent .= "use Illuminate\Http\Request;\n";
                 $controllerContent .= "use Illuminate\Support\Facades\DB;\n\n";
                 $controllerContent .= "use App\Http\Controllers\Controller;\n\n";
@@ -191,7 +191,7 @@ class TableController extends Controller
                 $routesContent = File::get($routesPath);
 
                 // Construye la declaración 'use' para el controlador
-                $useStatement = "use Laraflex\\AdminPanel\\Controllers\\Generated\\" . $controllerName . ";";
+                $useStatement = "use Caimari\\LaraFlex\\Controllers\\Generated\\" . $controllerName . ";";
 
                
                 $routeName = 'crud.' . $tableNameForRoute . '.index';
@@ -268,7 +268,7 @@ class TableController extends Controller
                 if (!File::exists($controllerPath)) {
                     // Crea el contenido del controlador desde cero
                     $controllerContent = "<?php\n\n";
-                    $controllerContent .= "namespace Laraflex\\AdminPanel\\Controllers\\Generated;\n\n";
+                    $controllerContent .= "namespace Caimari\\LaraFlex\\Controllers\\Generated;\n\n";
                     $controllerContent .= "use Illuminate\Http\Request;\n";
                     $controllerContent .= "use Illuminate\Support\Facades\DB;\n\n";
                     $controllerContent .= "use App\Http\Controllers\Controller;\n\n";
@@ -453,7 +453,7 @@ EOT;
                 $tableNameForRoute = $this->normalizeTableName($normalizedTableName);
 
                 // Construye la declaración 'use' para el controlador
-                $useStatement = "use Laraflex\\AdminPanel\\Controllers\\Generated\\" . $controllerName . ";";
+                $useStatement = "use Caimari\\LaraFlex\\Controllers\\Generated\\" . $controllerName . ";";
     
                 // Construye las cadenas para las rutas
                 $routeCreateString = "\nRoute::get('/" . $tableNameForRoute . "/create', [" . $controllerName . "::class, 'create'])->name('crud." . $tableNameForRoute . ".create');";
@@ -501,7 +501,7 @@ EOT;
             if (!File::exists($controllerPath)) {
                 // Crea el contenido del controlador desde cero
                 $controllerContent = "<?php\n\n";
-                $controllerContent .= "namespace Laraflex\\AdminPanel\\Controllers\\Generated;\n\n";
+                $controllerContent .= "namespace Caimari\\LaraFlex\\Controllers\\Generated;\n\n";
                 $controllerContent .= "use Illuminate\Http\Request;\n";
                 $controllerContent .= "use Illuminate\Support\Facades\DB;\n\n";
                 $controllerContent .= "use App\Http\Controllers\Controller;\n\n";
@@ -597,7 +597,7 @@ EOT;
                 $tableNameForRoute = $this->normalizeTableName($normalizedTableName);
 
                 // Construye la declaración 'use' para el controlador
-                $useStatement = "use Laraflex\\AdminPanel\\Controllers\\Generated\\" . $controllerName . ";";
+                $useStatement = "use Caimari\\LaraFlex\\Controllers\\Generated\\" . $controllerName . ";";
 
                 // Construye las cadenas para las rutas
                 $routeEditString = "\nRoute::get('/" . $tableNameForRoute . "/edit/{id}', [" . $controllerName . "::class, 'edit'])->name('crud." . $tableNameForRoute . ".edit');";
@@ -709,7 +709,7 @@ public function deleteRoutes($table, $controllerName)
     $routesPath = base_path('vendor/caimari/laraflex/src/routes/generated.php');
     $routesContent = File::get($routesPath);
 
-    $useStatement = "use Laraflex\\AdminPanel\\Controllers\\Generated\\" . $controllerName . ";";
+    $useStatement = "use Caimari\\LaraFlex\\Controllers\\Generated\\" . $controllerName . ";";
 
     // Si la declaración "use" existe en el archivo de rutas, elimínala
     if (Str::contains($routesContent, $useStatement)) {

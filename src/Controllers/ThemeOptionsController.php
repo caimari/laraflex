@@ -70,6 +70,10 @@ class ThemeOptionsController extends Controller
                 'created_at' => $activeTheme->created_at,
                 'updated_at' => $activeTheme->updated_at,
                 'color_default' => $activeTheme->color_default,
+                'color_default_2' => $activeTheme->color_default_2,
+                'sub_bar_color' => $activeTheme->sub_bar_color,
+                'sub_bar_text_color' => $activeTheme->sub_bar_text_color,
+                'header_logo_color' => $activeTheme->header_logo_color,
                 'navbar_background_color' => $activeTheme->navbar_background_color,
                 'navbar_text_color' => $activeTheme->navbar_text_color,
                 'footer_background_color' => $activeTheme->footer_background_color,
@@ -99,7 +103,7 @@ class ThemeOptionsController extends Controller
                 'sidebar_search_active' => $activeTheme->sidebar_search_active, 
             ];
         
-        return view('admin.theme-options.index', compact('options', 'dynamicBtnOptions'));
+        return view('laraflex::admin.theme-options.index', compact('options', 'dynamicBtnOptions'));
     }
     
 
@@ -146,11 +150,16 @@ class ThemeOptionsController extends Controller
                //   $activeTheme->breadcrumb_active = $request->input('breadcrumb_active');
               //    $activeTheme->main_content_active = $request->input('main_content_active');
                //   $activeTheme->footer_active = $request->input('footer_active');
-              //    $activeTheme->footer_2_active = $request->input('footer_2_active');
+                $activeTheme->footer_2_active = $request->input('footer_2_active');
               //    $activeTheme->footer_copyright_active = $request->input('footer_copyright_active');
              //   $activeTheme->created_at = $request->input('created_at');
                 $activeTheme->updated_at = $request->input('updated_at');
                 $activeTheme->color_default = $request->input('color_default');
+                $activeTheme->color_default_2 = $request->input('color_default_2');
+                $activeTheme->sub_bar_color = $request->input('sub_bar_color');
+                $activeTheme->sub_bar_text_color = $request->input('sub_bar_text_color');
+                $activeTheme->header_logo_color = $request->input('header_logo_color');
+                
                 $activeTheme->navbar_background_color = $request->input('navbar_background_color');
                 $activeTheme->navbar_text_color = $request->input('navbar_text_color');
                 $activeTheme->footer_background_color = $request->input('footer_background_color');

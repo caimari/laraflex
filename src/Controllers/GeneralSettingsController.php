@@ -60,6 +60,9 @@ class GeneralSettingsController extends Controller
         $settings->reddit = $request->input('reddit');
         $settings->telegram = $request->input('telegram');
         $settings->whatsapp = $request->input('whatsapp');
+
+        $settings->use_cookies_page = $request->input('use_cookies_page');
+        
     
         $settings->save();
     
@@ -69,9 +72,7 @@ class GeneralSettingsController extends Controller
         // Maneja el caso cuando no hay registros
     }
 }
-    
-
-                    // Establecer pagina o post como paginas de inicio
+                    // Establecer paginas como pagina de inicio
                     public function setHomePage($id)
                     {
                         $homePageSetting = GeneralSettings::first();
@@ -91,25 +92,47 @@ class GeneralSettingsController extends Controller
                         }
                     }
                     
-
+                    // Establecer posts como pagina de inicio
                     public function setHomePost($id)
-    {
-        $homePostSetting = GeneralSettings::first();
+                    {
+                        $homePostSetting = GeneralSettings::first();
 
-        if ($homePostSetting) {
-            // Se encontró un registro en la base de datos
+                        if ($homePostSetting) {
+                            // Se encontró un registro en la base de datos
 
-            // Resto del código existente
-            $homePostSetting->content_type = 'post';
-            $homePostSetting->content_id = $id;
-            $homePostSetting->save();
+                            // Resto del código existente
+                            $homePostSetting->content_type = 'post';
+                            $homePostSetting->content_id = $id;
+                            $homePostSetting->save();
 
-            return response()->json(['status' => 'success']);
-        } else {
-            // No se encontraron registros en la base de datos
-            // Maneja el caso cuando no hay registros
-        }
-    }
+                            return response()->json(['status' => 'success']);
+                        } else {
+                            // No se encontraron registros en la base de datos
+                            // Maneja el caso cuando no hay registros
+                        }
+                    }
+
+                    // Establecer conde snippets como pagina de inicio
+                    public function setHomeSnippet($id)
+                    {
+                        $homePageSetting = GeneralSettings::first();
+                    
+                        if ($homePageSetting) {
+                            // Se encontró un registro en la base de datos
+                    
+                            // Resto del código existente
+                            $homePageSetting->content_type = 'snippet';
+                            $homePageSetting->content_id = $id;
+                            $homePageSetting->save();
+                    
+                            return response()->json(['status' => 'success']);
+                        } else {
+                            // No se encontraron registros en la base de datos
+                            // Maneja el caso cuando no hay registros
+                        }
+                    }
+                    
+                    
 }
                     
 

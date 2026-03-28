@@ -1,6 +1,6 @@
 @extends('laraflex::layouts.admin')
-
 @section('content')
+
 
 
 <style>
@@ -10,26 +10,71 @@
     }
 </style>
 
-
-
 <div class="container-fluid px-4">
-    <div class="row">
-        <div class="col-md-9">
-            <!-- Contenido principal aquí -->
-            <h1>Theme Options</h1>
-            @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+    <h1 class="mt-4"><i class="fas fa-puzzle-piece"></i> Theme Options</h1>
+    <ol class="breadcrumb mb-4"></ol>
 
-        <form action="{{ route('theme.options.update') }}" method="POST">
+    @if(session('success'))
+    <div class="alert alert-success" role="alert">
+        {!! session('success') !!}
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger" role="alert">
+        {!! session('error') !!}
+    </div>
+    @endif
+
+
+    <form action="{{ route('theme.options.update') }}" method="POST">
     @csrf
     @method('POST')
 
-<!--
-<div class="margin"></div> -->
-<!-- Theme Name -->
+
+
+    <div class="container">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          
+        <a class="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1" role="tab" aria-controls="tab1"
+            aria-selected="true">Main Options</a>
+          
+            <a class="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2" role="tab" aria-controls="tab2"
+            aria-selected="false">Theme Sections</a>
+          
+            <a class="nav-link" id="tab3-tab" data-bs-toggle="pill" href="#tab3" role="tab" aria-controls="tab3"
+            aria-selected="false">Social links</a>
+
+            <a class="nav-link" id="tab4-tab" data-bs-toggle="pill" href="#tab4" role="tab" aria-controls="tab4"
+            aria-selected="false">Theme Style</a>
+
+        </div>
+      </div>
+
+     
+                    
+
+
+      <div class="col-md-10">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+            
+
+          <div class="card"> <!-- Start Card -->
+             
+         
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title">General Settings</h5>
+            <button type="submit" class="btn btn-primary">Save</button>  
+         </div>
+
+
+
+          <div class="card-body">
+
+            <!-- Theme Name -->
 <div class="form-group">
     <label for="site_name">Theme Name</label>
     <input type="text" name="name" id="name" class="form-control" value="{{ $options['name'] ?? '' }}" readonly>
@@ -67,52 +112,37 @@
     <label for="keywords" class="form-label">Site Keywords</label>
     <input type="text" class="form-control" id="keywords" name="site_keywords" value="{{ $options['site_keywords'] ?? '' }}">
 </div>
-
-<div class="mb-3">
-    <label for="twitter" class="form-label">Twitter</label>
-    <input type="text" class="form-control" id="twitter" name="twitter" value="{{ $options['twitter'] ?? '' }}">
-</div>
-
-<div class="mb-3">
-    <label for="facebook" class="form-label">Facebook</label>
-    <input type="text" class="form-control" id="facebook" name="facebook" value="{{ $options['facebook'] ?? '' }}">
-</div>
-
-<div class="mb-3">
-    <label for="pinterest" class="form-label">Pinterest</label>
-    <input type="text" class="form-control" id="pinterest" name="pinterest" value="{{ $options['pinterest'] ?? '' }}">
-</div>
-
-<div class="mb-3">
-    <label for="instagram" class="form-label">Instagram</label>
-    <input type="text" class="form-control" id="instagram" name="instagram" value="{{ $options['instagram'] ?? '' }}">
-</div>
-
-<div class="mb-3">
-    <label for="youtube" class="form-label">YouTube</label>
-    <input type="text" class="form-control" id="youtube" name="youtube" value="{{ $options['youtube'] ?? '' }}">
-</div>
-
-<div class="mb-3">
-    <label for="github" class="form-label">GitHub</label>
-    <input type="text" class="form-control" id="github" name="github" value="{{ $options['github'] ?? '' }}">
-</div>
-
-
-
-
-
-
-<div class="margin"></div>
-<button type="submit" class="btn btn-primary">Save</button>
-
-
-    </div> <!--------------------------------------- End MD 9 ------------>
+                  
         
+                </div><!-- End Card Body -->
+    </div> 
 
-<div class="col-md-3"> <!--------- Start MD3 ---------->
-<div class="margin"></div>
 
+          </div>
+          <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+      
+  
+
+          
+          <div class="card"> <!-- Start Card -->
+             
+         
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Theme Sections</h5>
+            <button type="submit" class="btn btn-primary">Save</button>  
+         </div>
+
+
+          <div class="card-body">
+
+
+   
+          <div class="container">
+  <div class="row">
+    <div class="col">
+      <!-- Contenido de la primera columna -->
+
+      
 
 @if (isset($options['theme_options']['header_sub_bar_active']) && $options['theme_options']['header_sub_bar_active'])
     <div class="form-group">
@@ -223,7 +253,12 @@
     </div>
 </div>
 
-<div class="margin"></div>
+
+    </div>
+    <div class="col">
+      <!-- Contenido de la segunda columna -->
+
+      <div class="margin"></div>
 <div>
     <h4>Sidebar</h4>
 </div>
@@ -288,6 +323,16 @@
     </div>
 </div>
 
+
+
+
+
+    </div> <!-- segunda columna END -->
+    <div class="col">
+      <!-- Contenido de la tercera columna -->
+
+      
+
 <!-- Botones Dinamicos -->
 <!--
 @if(!empty($dynamicBtnOptions['buttons']) && is_array($dynamicBtnOptions['buttons']))
@@ -321,8 +366,166 @@
 -->
 
 
+    </div>
+  </div>
+</div>
+
+
 <div class="margin"></div>
 
-</form>
+               
+         </div> <!-- End Card Body -->
+    </div> 
 
+
+
+          </div> <!-- End Tab 2 -->
+
+          <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+           
+          <div class="card"> <!-- Start Card -->
+             
+         
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title">Social Links</h5>
+            <button type="submit" class="btn btn-primary">Save</button>  
+         </div>
+   
+   
+             <div class="card-body">
+               
+
+             <div class="mb-3">
+    <label for="twitter" class="form-label">Twitter</label>
+    <input type="text" class="form-control" id="twitter" name="twitter" value="{{ $options['twitter'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+    <label for="facebook" class="form-label">Facebook</label>
+    <input type="text" class="form-control" id="facebook" name="facebook" value="{{ $options['facebook'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+    <label for="pinterest" class="form-label">Pinterest</label>
+    <input type="text" class="form-control" id="pinterest" name="pinterest" value="{{ $options['pinterest'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+    <label for="instagram" class="form-label">Instagram</label>
+    <input type="text" class="form-control" id="instagram" name="instagram" value="{{ $options['instagram'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+    <label for="youtube" class="form-label">YouTube</label>
+    <input type="text" class="form-control" id="youtube" name="youtube" value="{{ $options['youtube'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+    <label for="github" class="form-label">GitHub</label>
+    <input type="text" class="form-control" id="github" name="github" value="{{ $options['github'] ?? '' }}">
+</div>
+
+
+<div class="margin"></div>      
+
+
+                    
+              
+                       
+                   </div>
+       </div> <!-- End Card -->
+
+          </div> <!-- End tab 3 -->
+
+           <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab"> 
+
+           <div class="card"> <!-- Start Card -->
+             
+         
+             <div class="card-header d-flex justify-content-between align-items-center">
+               <h5 class="card-title">Theme Style</h5>
+               <button type="submit" class="btn btn-primary">Save</button>  
+            </div>
+                
+
+
+
+<div class="mb-3">
+  <label for="colorPicker" class="form-label">Color Default</label>
+  <input type="text" id="colorPicker" name="color_default" class="form-control form-control-sm" value="{{ $options['color_default'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+  <label for="colorPicker_2" class="form-label">Color Default 2</label>
+  <input type="text" id="colorPicker_2" name="color_default_2" class="form-control form-control-sm" value="{{ $options['color_default_2'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+  <label for="colorPicker_3" class="form-label">Sub Bar Color</label>
+  <input type="text" id="colorPicker_3" name="sub_bar_color" class="form-control form-control-sm" value="{{ $options['sub_bar_color'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+  <label for="colorPicker_4" class="form-label">Sub Bar Text Color</label>
+  <input type="text" id="colorPicker_4" name="sub_bar_text_color" class="form-control form-control-sm" value="{{ $options['sub_bar_text_color'] ?? '' }}">
+</div>
+
+<div class="mb-3">
+  <label for="colorPicker_5" class="form-label">Header Logo Color</label>
+  <input type="text" id="colorPicker_5" name="header_logo_color" class="form-control form-control-sm" value="{{ $options['header_logo_color'] ?? '' }}">
+</div>
+
+<script>
+  $(document).ready(function() {
+    $("#colorPicker").spectrum({
+      preferredFormat: "hex",
+      showInput: true,
+      showInitial: true
+    });
+
+    $("#colorPicker_2").spectrum({
+      preferredFormat: "hex",
+      showInput: true,
+      showInitial: true
+    });
+
+    $("#colorPicker_3").spectrum({
+      preferredFormat: "hex",
+      showInput: true,
+      showInitial: true
+    });
+
+    $("#colorPicker_4").spectrum({
+      preferredFormat: "hex",
+      showInput: true,
+      showInitial: true
+    });
+
+    $("#colorPicker_5").spectrum({
+      preferredFormat: "hex",
+      showInput: true,
+      showInitial: true
+    });
+
+  });
+</script>
+
+
+
+
+
+
+                </div> <!-- End Card -->
+            </div> <!-- End tab 4 -->
+
+       
+        
+         </div>
+      </div>
+    </div>
+  </div>
+  </form>
+<div class="margin"></div>
+
+@include('laraflex::admin.partials.pages-ckeditor-conf')
 @endsection

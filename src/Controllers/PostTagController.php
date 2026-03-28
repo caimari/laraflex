@@ -13,18 +13,18 @@ class PostTagController extends Controller
         public function index()
     {
         $tags = SitePostTag::all();
-        return view('admin.post-tags.index', compact('tags'));
+        return view('laraflex::admin.post-tags.index', compact('tags'));
     }
 
     public function create()
     {
-        return view('admin.post-tags.create');
+        return view('laraflex::admin.post-tags.create');
     }
 
     public function edit($id)
     {
         $tag = SitePostTag::findOrFail($id);
-        return view('admin.post-tags.edit', compact('tag'));
+        return view('laraflex::admin.post-tags.edit', compact('tag'));
     }
 
         public function destroy($id)

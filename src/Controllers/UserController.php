@@ -16,14 +16,14 @@ public function index()
 {
     $users = User::all();
 
-    return view('admin.users.index', compact('users'));
+    return view('laraflex::admin.users.index', compact('users'));
 }
 
 public function edit()
 {
     $user = auth()->user();
 
-    return view('admin.users.edit', compact('user'));
+    return view('laraflex::admin.users.edit', compact('user'));
 }
 
 public function update(Request $request)

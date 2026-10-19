@@ -64,6 +64,15 @@ class LaraFlexServiceProvider extends ServiceProvider
                 __DIR__.'/../images' => storage_path('app/public/default')
             ], 'laraflex-images');
 
+        // Publicar los assets (CSS/JS/imágenes) en public/, necesario cuando el docroot es public/:
+        // php artisan vendor:publish --tag=laraflex-assets   (añadir --force para actualizarlos)
+        // Las rutas de destino mantienen la URL /vendor/caimari/... que usan las vistas.
+        $this->publishes([
+            __DIR__.'/../assets' => public_path('vendor/caimari/laraflex/assets'),
+            __DIR__.'/resources/assets' => public_path('vendor/caimari/laraflex/src/resources/assets'),
+            __DIR__.'/../themes/limpa/src/resources/assests' => public_path('vendor/caimari/laraflex/themes/limpa/src/resources/assests'),
+        ], 'laraflex-assets');
+
 
         // Para trabajar con tablas con el paquete doctrine/dbal
         Schema::getConnection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');

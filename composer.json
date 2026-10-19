@@ -2,7 +2,6 @@
     "name": "caimari/laraflex",
     "description": "LaraFlex CMS & CRUD Toolkit",
     "type": "library",
-    "version": "1.0.1",
     "license": "MIT",
     "authors": [
         {
@@ -17,7 +16,7 @@
         }
     },
     "require": {
-        "php": "^7.3",
+        "php": "^7.3|^8.0",
         "laravel/framework": "^8.0",
         "realrashid/sweet-alert": "^7.0",
         "doctrine/dbal": "*"
@@ -28,12 +27,5 @@
                 "Caimari\\LaraFlex\\LaraFlexServiceProvider"
             ]
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/acaimari/laraflex.git",
-            "branch": "main"
-        }
-    ]
+    }
 }

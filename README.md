@@ -1,29 +1,39 @@
-# LaraFlex CMS & CRUD Toolkit (Admin Panel) V.1.0.1
+# LaraFlex CMS & CRUD Toolkit (Admin Panel)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-El paquete "LaraFlex CMS & CRUD Toolkit" es una solución actualmente en su version temprana de desarrollo para la administración de laravel con su panel de administracion, desarrollo de CRUD (Create, Read, Update, Delete) y sistema de gestión de contenido en aplicaciones Laravel, para la creacion de páginas, posts, categorias, tags, importacion de temas etc... Diseñado para agilizar el desarrollo en Laravel y ofrecer una interfaz de usuario intuitiva, este paquete proporciona una amplia gama de características y funcionalidades.
+El paquete "LaraFlex CMS & CRUD Toolkit" es una solución, en fase temprana de desarrollo, para añadir a cualquier aplicación Laravel un panel de administración, generación de CRUD (Create, Read, Update, Delete) y un sistema de gestión de contenido: páginas, posts, categorías, tags, menús, importación de temas, etc. Está pensado para ahorrar trabajo repetitivo y ofrecer una interfaz intuitiva.
+
+Se instala como un paquete más de Composer en un Laravel limpio y crea el panel de administración y la parte pública (con un tema) sin tocar el resto de la aplicación.
+
+## Requisitos
+
+| | Versión |
+|---|---|
+| PHP | 7.3 o superior, incluido PHP 8.x (probado en PHP 8.3) |
+| Laravel | **8.x** (`laravel/framework ^8.0`). No es compatible todavía con Laravel 9 o superior |
+| Base de datos | MySQL / MariaDB |
+| Otros | `doctrine/dbal`, `realrashid/sweet-alert` (se instalan solos con Composer) |
 
 ## Características destacadas
 
-- **Panel de administración listo para usar:** Ofrece una interfaz de usuario profesional y amigable que permite administrar eficientemente la aplicación.
-- **CRUD automático:** Genera automáticamente las operaciones CRUD para tus modelos, ahorrándote tiempo y esfuerzo en la implementación repetitiva de código.
-- **Sistema de gestión de contenido (CMS):** Permite crear y gestionar fácilmente el contenido de tu aplicación, como páginas, publicaciones de blog, categorías y más.
-- **Integración con Laravel:** Totalmente compatible con el framework Laravel y aprovecha sus características y mejores prácticas.
+- **Panel de administración listo para usar:** interfaz profesional y amigable para administrar la aplicación.
+- **CRUD automático:** genera las operaciones CRUD de tus modelos.
+- **Sistema de gestión de contenido (CMS):** páginas, posts, categorías, tags y más.
+- **Integración con Laravel:** se registra solo mediante el descubrimiento de paquetes de Laravel.
+- **Cookies, fragmentos de código (snippets) y menús** gestionables desde el panel.
 
-## En desarrollo
+### En desarrollo
 
-- **Personalización flexible:** Adapta el panel de administración a tus necesidades con opciones de configuración y ajustes visuales.
-- **Autenticación y autorización:** Proporciona una capa de seguridad integrada para proteger las áreas administrativas y definir roles y permisos de usuario.
-- **Soporte para múltiples idiomas:** Permite localizar tu aplicación en diferentes idiomas, facilitando su uso en entornos multilingües.
-
+- Personalización flexible mediante opciones de configuración y ajustes visuales.
+- Autenticación y autorización con roles y permisos.
+- Soporte para múltiples idiomas.
 
 ## Instalación
 
-Puedes instalar el paquete utilizando [Composer](https://getcomposer.org). Ejecuta los siguientes comandos en la raíz de tu proyecto Laravel:
+Ejecuta estos comandos en la raíz de un proyecto Laravel 8 (con la base de datos ya configurada en `.env`):
 
 ```bash
-
 composer require caimari/laraflex
 composer require caimari/fmanager
 composer require caimari/laraflex-theme-plexus
@@ -31,31 +41,52 @@ composer require caimari/laraflex-theme-plexus
 php artisan migrate
 php artisan storage:link
 php artisan vendor:publish --tag=laraflex-images
+php artisan vendor:publish --tag=laraflex-assets
+```
 
-routes/web.php
+### Assets (CSS/JS/imágenes) y carpeta pública
 
+Los temas cargan sus estilos y scripts desde URLs `/vendor/caimari/...`. En un Laravel normal la carpeta pública del servidor web es `public/`, así que esos ficheros hay que publicarlos allí con:
+
+```bash
+php artisan vendor:publish --tag=laraflex-assets
+```
+
+Tras actualizar los paquetes con `composer update`, vuelve a publicarlos para que los assets se actualicen:
+
+```bash
+php artisan vendor:publish --tag=laraflex-assets --force
+```
+
+### Ruta de bienvenida
+
+En `routes/web.php`, comenta o elimina la ruta de bienvenida que trae Laravel por defecto, porque usa la misma URL raíz (`/`) que el tema y entraría en conflicto:
+
+```php
 /*
 Route::get('/', function () {
     return view('welcome');
 });
 */
+```
 
-La ruta mencionada es una ruta de bienvenida predeterminada que se crea automáticamente al instalar Laravel. Utiliza la URL raíz ("/") y el método GET para acceder a ella. Sin embargo, si deseas asegurarte de que el tema "laraflex-theme-plexus" se cargue correctamente, es posible que debas tener en cuenta otras rutas definidas en el archivo "routes/web.php" que también utilicen la URL raíz ("/"). 
-
-En ese caso, podría haber conflictos y la ruta de bienvenida predeterminada podría interferir con la carga del tema deseado. Para evitar esto, puedes comentar o eliminar la ruta de bienvenida predeterminada y asegurarte de que las rutas definidas en el archivo "routes/web.php" sean coherentes y no entren en conflicto con la carga del tema que deseas utilizar.
+Comprueba también que ninguna otra ruta tuya use `/`.
 
 ## Desinstalación
 
+```bash
 composer remove caimari/laraflex caimari/fmanager caimari/laraflex-theme-plexus
-
 ```
 
 ## Acceso
 
-La ruta predeterminada del panel de LaraFlex es "/panel". Después de realizar la migración de las tablas, se crea un usuario administrador con las siguientes credenciales:
+La ruta predeterminada del panel es `/panel`. Tras migrar las tablas se crea un usuario administrador con estas credenciales:
 
-- Login: admin@admin.com
-- Contraseña: adminadmin
+- Login: `admin@admin.com`
+- Contraseña: `adminadmin`
 
-Es importante tener en cuenta que debes cambiar inmediatamente estas credenciales de acceso y la contraseña predeterminada por razones de seguridad.
+**Cambia estas credenciales inmediatamente** después del primer acceso: son públicas.
 
+## Historial de cambios
+
+Consulta [CHANGELOG.md](CHANGELOG.md).

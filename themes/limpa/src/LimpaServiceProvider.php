@@ -116,12 +116,19 @@ class LimpaServiceProvider extends ServiceProvider
     
         // General Settings
         View::composer('*', function ($view) {
+            static $cachedSettings = false;
+            if ($cachedSettings !== false) {
+                $view->with('settings', $cachedSettings);
+                return;
+            }
             try {
                 $settings = GeneralSettings::firstOrFail();
+                $cachedSettings = $settings;
                 $view->with('settings', $settings);
             } catch (\Exception $e) {
                 // Manejar el caso en el que no hay registros o la tabla no existe
                 // Por ejemplo, puedes establecer valores predeterminados o mostrar un mensaje de error
+                $cachedSettings = null;
                 $view->with('settings', null);
             }
         });
@@ -129,7 +136,17 @@ class LimpaServiceProvider extends ServiceProvider
 
         // Posts
         View::composer('*', function ($view) {
-            $posts = SitePost::orderBy('created_at', 'desc')->paginate(10);
+            // Se dispara por cada vista: se calcula una sola vez por petición.
+            static $cachedData = null;
+            if ($cachedData !== null) {
+                $view->with($cachedData);
+                return;
+            }
+            // Vistas totales/únicas calculadas en la propia consulta (sin N+1).
+            $posts = SitePost::withSum('views as totalViews', 'views')
+                ->withCount('views as uniqueViews')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
             $PostTotalViews = 0;
             $PostUniqueViews = 0;
             $totalViews = 0;
@@ -146,7 +163,9 @@ class LimpaServiceProvider extends ServiceProvider
                 'views as total_views' => function ($query) {
                     $query->select(DB::raw("SUM(views) as total_views"));
                 }
-            ])->orderByDesc('total_views')->take(4)->get();
+            ])->withSum('views as totalViews', 'views')
+              ->withCount('views as uniqueViews')
+              ->orderByDesc('total_views')->take(4)->get();
         
             $popularPosts = SitePost::withCount([
                 'views as total_views' => function ($query) {
@@ -154,7 +173,9 @@ class LimpaServiceProvider extends ServiceProvider
                 }
             ])->orderByDesc('total_views')->take(3)->get();
         
-            $firstThreePostsWithImage = SitePost::whereNotNull('image')
+            $firstThreePostsWithImage = SitePost::withSum('views as totalViews', 'views')
+                                                 ->withCount('views as uniqueViews')
+                                                 ->whereNotNull('image')
                                                  ->where('image', '<>', '')
                                                  ->inRandomOrder()
                                                  ->take(3)
@@ -162,55 +183,66 @@ class LimpaServiceProvider extends ServiceProvider
         
             // Aquí añadimos las vistas totales y las vistas únicas a cada post
             foreach($posts as $post) {
-                $post->totalViews = $post->views->sum('views');
-                $post->uniqueViews = $post->views->count();
+                $post->totalViews = (int) $post->totalViews;
+                $post->uniqueViews = (int) $post->uniqueViews;
                 $PostTotalViews += $post->totalViews;
                 $PostUniqueViews += $post->uniqueViews;
             }
         
             // Y también para los post más vistos y los primeros tres post con imagen
             foreach($mostViewedPosts as $post) {
-                $post->totalViews = $post->views->sum('views');
-                $post->uniqueViews = $post->views->count();
+                $post->totalViews = (int) $post->totalViews;
+                $post->uniqueViews = (int) $post->uniqueViews;
             }
         
             foreach($firstThreePostsWithImage as $post) {
-                $post->totalViews = $post->views->sum('views');
-                $post->uniqueViews = $post->views->count();
+                $post->totalViews = (int) $post->totalViews;
+                $post->uniqueViews = (int) $post->uniqueViews;
             }
         
             // Pasamos las variables a las vistas
-            $view->with('posts', $posts)
-                ->with('postsCount', $postsCount)
-                ->with('postsWithImage', $postsWithImage)
-                ->with('mostViewedPosts', $mostViewedPosts)
-                ->with('firstThreePosts', $firstThreePostsWithImage)
-                ->with('PostTotalViews', $PostTotalViews)
-                ->with('PostUniqueViews', $PostUniqueViews)
-                ->with('totalViews', $totalViews)
-                ->with('uniqueViews', $uniqueViews)
-                ->with('recentPosts', $recentPosts)
-                ->with('popularPosts', $popularPosts);
+            $cachedData = [
+                'posts' => $posts,
+                'postsCount' => $postsCount,
+                'postsWithImage' => $postsWithImage,
+                'mostViewedPosts' => $mostViewedPosts,
+                'firstThreePosts' => $firstThreePostsWithImage,
+                'PostTotalViews' => $PostTotalViews,
+                'PostUniqueViews' => $PostUniqueViews,
+                'totalViews' => $totalViews,
+                'uniqueViews' => $uniqueViews,
+                'recentPosts' => $recentPosts,
+                'popularPosts' => $popularPosts,
+            ];
+            $view->with($cachedData);
         });
         
 
                 // Pages
                 View::composer('*', function ($view) {
-                    $pages = SitePage::orderBy('created_at', 'desc')->paginate(10); // Ajusta el número de elementos por página según tus necesidades
+                    static $cachedPages = null;
+                    if ($cachedPages !== null) {
+                        $view->with($cachedPages);
+                        return;
+                    }
+                    $pages = SitePage::withSum('views as totalViews', 'views')->withCount('views as uniqueViews')->orderBy('created_at', 'desc')->paginate(10); // Ajusta el número de elementos por página según tus necesidades
 
                     $pageTotalViews = 0;
                     $pageUniqueViews = 0;
 
                     foreach ($pages as $page) {
-                        $page->totalViews = $page->views->sum('views');
-                        $page->uniqueViews = $page->views->count();
+                        $page->totalViews = (int) $page->totalViews;
+                        $page->uniqueViews = (int) $page->uniqueViews;
                         $pageTotalViews += $page->totalViews;
                         $pageUniqueViews += $page->uniqueViews;
                     }
 
-                    $view->with('pages', $pages);
-                    $view->with('pageTotalViews', $pageTotalViews);
-                    $view->with('pageUniqueViews', $pageUniqueViews);
+                    $cachedPages = [
+                        'pages' => $pages,
+                        'pageTotalViews' => $pageTotalViews,
+                        'pageUniqueViews' => $pageUniqueViews,
+                    ];
+                    $view->with($cachedPages);
                 });
 
 
@@ -218,20 +250,25 @@ class LimpaServiceProvider extends ServiceProvider
   
                     // Categories
                     View::composer('*', function ($view) {
-                        $categories = SitePostCategory::withCount('posts')->get();
+                        static $categories = null;
+                        $categories = $categories ?? SitePostCategory::withCount('posts')->get();
                         $view->with('categories', $categories);
                     });
                 
                     // Tags
                     View::composer('*', function ($view) {
-                        $tags = SitePostTag::all();
+                        static $tags = null;
+                        $tags = $tags ?? SitePostTag::all();
                         $view->with('tags', $tags);
                     });
                 
                     // Menu
                     View::composer('*', function ($view) {
-                        $menuController = new SiteMenuController();
-                        $public_menu = $menuController->showMenu();
+                        static $public_menu = null;
+                        if ($public_menu === null) {
+                            $menuController = new SiteMenuController();
+                            $public_menu = $menuController->showMenu();
+                        }
                         $view->with('public_menu', $public_menu);
                     });
                 

@@ -2,6 +2,11 @@
 
 Todos los cambios relevantes de este paquete. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [Sin publicar]
+
+### Añadido
+- README: tabla con todo lo que incluye el panel (`/panel`) y la parte pública.
+
 ## [1.0.3] - 2026-10-19
 
 ### Añadido

@@ -23,7 +23,32 @@ Se instala como un paquete más de Composer en un Laravel limpio y crea el panel
 - **Integración con Laravel:** se registra solo mediante el descubrimiento de paquetes de Laravel.
 - **Cookies, fragmentos de código (snippets) y menús** gestionables desde el panel.
 
-### En desarrollo
+## Qué incluye el panel
+
+Todo el panel cuelga de la ruta `/panel`:
+
+| Área | Qué permite |
+|---|---|
+| **Páginas** | Crear, editar y borrar; marcar una como portada |
+| **Posts** | Crear, editar, borrar, buscar, quitar imagen y marcar uno como portada |
+| **Categorías y tags** | Crear, editar y borrar |
+| **Galerías** | Crear, editar y borrar |
+| **Menús** | Gestor de menús con elementos: categorías, posts, páginas y enlaces propios; crear, editar y borrar |
+| **Temas** | Listar, activar o desactivar, instalar, hacer copia y borrar |
+| **Opciones del tema** | Ajustes visuales del tema activo |
+| **Crear tema** | Asistente para generar un tema nuevo |
+| **Ajustes generales** | Datos del sitio: título, descripción, redes sociales, logo y favicon |
+| **Fragmentos de código** | Crear, editar, borrar, volver a una versión anterior y ponerlos de portada |
+| **Socios (Members)** | Socios y tipos de socio: crear, editar y borrar |
+| **Usuarios** | Perfil del administrador |
+| **Tablas SQL y generador CRUD** | Crear tablas y generar sus pantallas de listado, alta y edición, con opción de borrar el CRUD generado |
+| **Gestor de ficheros** | FManager integrado |
+| **Paquetes** | Instalar paquetes con Composer desde el panel |
+| **Buscador** | Búsqueda dentro del panel |
+
+**Parte pública** (con el tema): portada, listado y detalle de posts (`/p`), categorías (`/c`), tags (`/t`), páginas (`/pg`), buscador, página de cookies con su aviso de consentimiento (`/use-of-cookies`) y contador de visitas por post y página.
+
+## En desarrollo
 
 - Personalización flexible mediante opciones de configuración y ajustes visuales.
 - Autenticación y autorización con roles y permisos.
